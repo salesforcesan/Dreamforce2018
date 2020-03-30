@@ -5,8 +5,6 @@ jobs:
     - image: steveb8n/circle-sfdx:latest
     steps:
     - checkout
-    - setup_remote_docker:
-        docker_layer_caching: true
     - run:
         name: Run node.js pure function tests
         working_directory: js/pure
