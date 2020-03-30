@@ -1,8 +1,7 @@
 # Get the private key from the environment variable
 echo "Setting up DevHub Connection..."
 mkdir keys
-
-openssl enc -nosalt -aes-256-cbc -d -in server.key.enc -out keys/server.key -base64 -K 962892A4BC3427202D133E8B803A8E2420EE6ACA5215E3296612D59C800FEB01 -iv 835C2944F866258C2DCB2D3DCDA9A81A
+echo $SFDC_SERVER_KEY | openssl enc -nosalt -aes-256-cbc -d -in server.key.enc -out keys/server.key -base64 -K 962892A4BC3427202D133E8B803A8E2420EE6ACA5215E3296612D59C800FEB01 -iv 835C2944F866258C2DCB2D3DCDA9A81A
 
 # Authenticate to salesforce
 echo "Authenticating..."
