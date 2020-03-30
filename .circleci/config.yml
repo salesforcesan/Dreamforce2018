@@ -17,9 +17,7 @@ jobs:
           command: . build/install.sh
       - run:
           name: Create Scratch Org
-          command: |
-              sfdx force:auth:jwt:grant --clientid 3MVG9szVa2RxsqBbjmqiI4rBid8cleaSO4u1nK9fCWcAXic8CVGrb8A.nNPgUtQwfoyRQTTEZc18ZJGGHZyoX --jwtkeyfile build/server.key --username salesforce.san@gmail.com --setdefaultdevhubusername -a DevHub
-              sfdx force:org:create -f config/project-scratch-def.json -a ${CIRCLE_BRANCH} -s
+          command: . build/create-scratch-org.sh
       - run:
           name: Validate Components & Run Tests
           command: . build/test.sh
