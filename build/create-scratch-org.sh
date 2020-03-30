@@ -6,7 +6,8 @@ openssl enc -nosalt -aes-256-cbc -in keys/server.key -out server.key.enc -base64
 
 # Authenticate to salesforce
 echo "Authenticating..."
-sfdx force:auth:jwt:grant --clientid $SFDC_PROD_CLIENTID --jwtkeyfile keys/server.key --username $SFDC_PROD_USER --setdefaultdevhubusername -a DevHub
+
+sfdx force:auth:jwt:grant --clientid 3MVG9szVa2RxsqBbjmqiI4rBid8cleaSO4u1nK9fCWcAXic8CVGrb8A.nNPgUtQwfoyRQTTEZc18ZJGGHZyoX --jwtkeyfile keys/server.key --username salesforce.san@gmail.com --setdefaultdevhubusername -a DevHub
 
 #Create a scratch org
 echo "Creating the Scratch Org..."
