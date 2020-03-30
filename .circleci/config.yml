@@ -2,52 +2,42 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:latest
+    - image: steveb8n/circle-sfdx:latest
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - sfdx-version-41-local  
-      - run:
-          name: Install Salesforce DX
-          command: |
-              openssl enc -nosalt -aes-256-cbc -d -in build/server.key.enc -out build/server.key -base64 -K 962892A4BC3427202D133E8B803A8E2420EE6ACA5215E3296612D59C800FEB01 -iv 835C2944F866258C2DCB2D3DCDA9A81A
-      - run:
-          name: Install Dependencies
-          command: . build/install.sh
-      - run:
-          name: Create Scratch Org
-          command: . build/create-scratch-org.sh
-      - run:
-          name: Validate Components & Run Tests
-          command: . build/test.sh
-      - store_test_results:
-          path: test-results
-  deploy-prod:
-    docker:
-    - image: circleci/node:latest
-    steps:
-      - checkout
-      - run:
-          name: Install Dependencies
-          command: . build/install.sh
-      - run:
-          name: Login to Production
-          command: . build/setup-prod.sh
-      - run:
-          name: Deploy to Production
-          command: . build/deploy-prod.sh
-workflows:
-  version: 2
-  validate:
-    jobs:
-      - build:
-          filters:
-            branches:
-              ignore:
-                - master
-      - deploy-prod:
-          filters:
-            branches:
-              only:
-                - master
+    - checkout
+    - setup_remote_docker:
+        docker_layer_caching: true
+    - run:
+        name: Run node.js pure function tests
+        working_directory: js/pure
+        command: |
+          mkdir -p ~/junit
+          npm install
+          ./node_modules/jasmine-node/bin/jasmine-node spec --junitreport --output ~/junit
+    - run:
+        name: Create auth token
+        command: echo $SFDC_AUTH > hubauth.txt
+    - run:
+        name: Authenticate to Hub Org (using sfdxurl flow)
+        command: sfdx force:auth:sfdxurl:store --setdefaultdevhubusername --sfdxurlfile hubauth.txt
+    - run:
+        name: Remove auth token
+        command: rm hubauth.txt
+    - run:
+        name: Create Scratch Org
+        command: sfdx force:org:create --definitionfile config/project-scratch-def.json --durationdays 1 --setdefaultusername --setalias circleci
+    - run:
+        name: Install Lightning Testing Service package
+        command: sfdx force:lightning:test:install
+    - run:
+        name: Deploy Source
+        command: sfdx force:source:push
+    - run:
+        name: Run Apex Tests
+        command: sfdx force:apex:test:run --codecoverage --outputdir ~/junit --resultformat junit --wait 2
+    - run:
+        name: Run Lightning Testing Service Tests
+        command: sfdx force:lightning:test:run --configfile config/lts-config.json --appname DiagramViewerTests.app --resultformat junit --outputdir ~/junit
+    - store_test_results:
+        path: ~/junit
+    
