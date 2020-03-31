@@ -16,7 +16,7 @@ jobs:
         command: rm hubauth.txt
     - run:
         name: Create Scratch Org
-        command: sfdx force:org:create --definitionfile config/project-scratch-def.json --durationdays 1 --setdefaultusername dreamhouse-org --setalias dreamhouse-org
+        command: sfdx force:org:create --definitionfile config/project-scratch-def.json --durationdays 1 --setalias dreamhouse-org
     - run:
         name: Install Lightning Testing Service package
         command: sfdx force:lightning:test:install
@@ -33,5 +33,5 @@ jobs:
         path: ~/junit
     - run:
         name: Delete Scratch Org (ignoring bash return code)
-        command: sfdx force:org:delete --noprompt --targetusername dreamhouse-org || true
+        command: sfdx force:org:delete --noprompt --targetusername || true
         when: always
