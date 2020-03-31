@@ -11,17 +11,17 @@ jobs:
     - run:
         name: Authenticate to Hub Org (using sfdxurl flow)
         command: |
-              sfdx force:auth:sfdxurl:store -f assets/sfdxurl.txt -d -a dreamhouse-org
+              sfdx force:auth:sfdxurl:store -f assets/sfdxurl.txt --setdefaultusername salesforce.san@gmail.com -d -a dreamhouse-org
               sfdx force:config:set defaultdevhubusername=salesforce.san@gmail.com --global
     - run:
         name: Remove auth token
         command: rm hubauth.txt
     - run:
         name: Create Scratch Org
-        command: sfdx force:org:create --definitionfile config/project-scratch-def.json --durationdays 1 --setalias dreamhouse-org
+        command: sfdx force:org:create --definitionfile config/project-scratch-def.json --durationdays 1  --setdefaultusername salesforce.san@gmail.com --setalias dreamhouse-org
     - run:
         name: Deploy Source
-        command: sfdx force:source:push
+        command: sfdx force:source:push --setdefaultusername salesforce.san@gmail.com
     - run:
         name: Delete Scratch Org (ignoring bash return code)
         command: sfdx force:org:delete --noprompt --targetusername || true
