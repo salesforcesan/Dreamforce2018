@@ -6,13 +6,6 @@ jobs:
     steps:
     - checkout
     - run:
-        name: Run node.js pure function tests
-        working_directory: js/pure
-        command: |
-          mkdir -p ~/junit
-          npm install
-          ./node_modules/jasmine-node/bin/jasmine-node spec --junitreport --output ~/junit
-    - run:
         name: Create auth token
         command: echo $SFDC_AUTH > hubauth.txt
     - run:
