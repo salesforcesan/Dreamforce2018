@@ -10,13 +10,13 @@ jobs:
         command: echo $SFDC_AUTH > hubauth.txt
     - run:
         name: Authenticate to Hub Org (using sfdxurl flow)
-        command: sfdx force:auth:sfdxurl:store -f assets/sfdxurl.txt -d -a dreamforce2018
+        command: sfdx force:auth:sfdxurl:store -f assets/sfdxurl.txt --setdefaultusername dreamhouse-org -d -a dreamhouse-org
     - run:
         name: Remove auth token
         command: rm hubauth.txt
     - run:
         name: Create Scratch Org
-        command: sfdx force:org:create --definitionfile config/project-scratch-def.json --durationdays 1 --setdefaultusername --setalias dreamforce2018
+        command: sfdx force:org:create --definitionfile config/project-scratch-def.json --durationdays 1 --setdefaultusername dreamhouse-org --setalias dreamhouse-org
     - run:
         name: Install Lightning Testing Service package
         command: sfdx force:lightning:test:install
@@ -33,5 +33,5 @@ jobs:
         path: ~/junit
     - run:
         name: Delete Scratch Org (ignoring bash return code)
-        command: sfdx force:org:delete --noprompt --targetusername circleci || true
+        command: sfdx force:org:delete --noprompt --targetusername dreamhouse-org || true
         when: always
