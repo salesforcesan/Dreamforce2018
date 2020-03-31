@@ -11,7 +11,7 @@ jobs:
     - run:
         name: Authenticate to Hub Org (using sfdxurl flow)
         command: |
-              sfdx force:auth:sfdxurl:store -f assets/sfdxurl.txt --setdefaultusername salesforce.san@gmail.com -d -a dreamhouse-org
+              sfdx force:auth:sfdxurl:store -f assets/sfdxurl.txt -d -a dreamhouse-org
               sfdx force:config:set defaultdevhubusername=salesforce.san@gmail.com --global
     - run:
         name: Remove auth token
